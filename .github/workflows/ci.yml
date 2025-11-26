@@ -22,9 +22,10 @@ jobs:
       - name: Install Firefox and Geckodriver
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget curl gnupg firefox-esr
-          wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
-          tar -xzf geckodriver-v0.34.0-linux64.tar.gz
+          sudo apt-get install -y wget curl gnupg firefox-esr jq
+          GECKODRIVER_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r .tag_name)
+          wget https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz
+          tar -xzf geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz
           sudo mv geckodriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/geckodriver
 
@@ -38,12 +39,12 @@ jobs:
           PYTHONUNBUFFERED: 1
           MOZ_HEADLESS: 1
         run: |
-          pytest --maxfail=1 --disable-warnings --tb=short
+          pytest --html=report.html --self-contained-html
 
-      - name: Upload test artifacts
+      - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pytest-cache
-          path: .pytest_cache/
+          name: test-report
+          path: report.html
           retention-days: 7
