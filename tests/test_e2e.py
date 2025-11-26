@@ -7,7 +7,7 @@ from pages.account_page import AccountPage
 
 BASE_PRODUCT = "https://famo.ua/products/svitshot-z-vyshyvkoiu-na-flisi-sw-f-532-102043"
 
-@pytest.mark.skip(reason="Тимчасово вимкнено через зміну об'єкту")
+@pytest.mark.skip(reason="Тимчасово вимкнено через зміну об'єкту ")
 def test_login_and_add_to_cart(driver):
     # 1️⃣ Логін
     login = LoginPage(driver)
